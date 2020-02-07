@@ -1,0 +1,22 @@
+{
+  "name": "twitch-stream-recorder",
+  "version": "1.0.0",
+  "description": "Record Twitch streams automatically",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "debug": "node index --debug"
+  },
+  "author": "cmd430/Bred",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "ffmpeg-static": "^4.0.1",
+    "get-twitch-stream": "git+https://github.com/cmd430/get-twitch-stream.git",
+    "lodash.merge": "^4.6.2",
+    "minimist": "^1.2.0",
+    "mkdirp": "^1.0.3",
+    "strip-ansi": "^6.0.0",
+    "twitch-realtime": "git+https://github.com/cmd430/twitch-realtime.git"
+  }
+}

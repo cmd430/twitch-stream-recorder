@@ -1,0 +1,6 @@
+*.exe
+*.notes
+*.dump
+*.log
+/*recordings/
+config.*.js*

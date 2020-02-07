@@ -1,0 +1,13 @@
+{
+  "streamer": "TwitchUser",
+  "recorder": {
+    "stream_format": [
+      "source"
+    ],
+    "output_template": "recordings\\:year\\:month\\:shortYear.:month.:day :period -- :title"
+  },
+  "time": {
+    "timezone": "Europe/London",
+    "timezone_format": "en-GB"
+  }
+}
