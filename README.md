@@ -5,7 +5,7 @@
 ---
 
 ![](./.github/example_output.png) 
-> Example output of application output
+> Example of application output
 ---
 
 ## Table of Contents
