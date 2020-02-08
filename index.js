@@ -193,8 +193,8 @@ async function recordStream () {
   }).split(', ')
   let titleRaw = await twitchStream.getStreamTitle(config.streamer)
 
-  let name = config.streamer.replace(/[/\\?%*:|"<>]/g, '-')
-  let title = titleRaw.replace(/[/\\?%*:|"<>]/g, '-')
+  let name = config.streamer.replace(/[/\\?%*:|"<>]/g, '_')
+  let title = titleRaw.replace(/[/\\?%*:|"<>]/g, '#')
   let date = timeZoneDate[0].replace(/\//g, '.')
   let time = timeZoneTime[1].split(' ')[0].replace(/\:/g, '-')
   let day = timeZoneDate[0].split('/')[0]
