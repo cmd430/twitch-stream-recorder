@@ -11,7 +11,7 @@ const stripAnsi = require('strip-ansi')
 const minimist = require('minimist')(process.argv.slice(2))
 
 const config_defaults = {
-  streamer: 'Sweet_Anita',
+  streamer: 'TwitchUser',
   recorder: {
     stream_format: [
       'source'
@@ -32,7 +32,7 @@ const config_defaults = {
 }
 let config_user = {}
 try {
-  config_user = require('./config')
+  config_user = minimist.config ? require(resolve(minimist.config)) : require('./config')
 } catch (error) {}
 const config_args = {
   streamer: minimist.streamer,
@@ -393,6 +393,9 @@ function showHelp () {
 
           --tz_format=${chalk.grey(`<timezone format>`)}     Set the timezone for local logs and file names, accepts en-GB or en-US
                                             Default: ${chalk.grey(`en-GB`)}
+
+          --config=${chalk.grey(`<path>`)}                   Set path to config.json to use
+                                            Default: ${chalk.grey(`./config.json`)}
 
           --help                            Show this help
 
