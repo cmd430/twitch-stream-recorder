@@ -1,6 +1,6 @@
 # Twitch Stream Recorder
 
-> Automatically save record live stream from Twitch
+> Automatically record live streams from Twitch
 
 ---
 
@@ -56,7 +56,7 @@
 # Features
 - Monitor streamer and automatically record to disk when live
   - streams are saved by default with the name following naming format:  
-   `:shortYear.:month.:day :period -- :title.mp4`
+   `./recordings/:year/:month/:shortYear.:month.:day :period -- :title.mp4`
 - `config.json` to save settings
 - Command line args to override settings on a per run basis
 
