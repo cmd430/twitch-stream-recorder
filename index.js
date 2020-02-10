@@ -213,6 +213,7 @@ async function recordStream () {
   filename = filename.replace(/:shortYear/gi, `${shortYear}`)
   filename = filename.replace(/:period/gi, `${period}`)
   filename = filename.replace(/[/?%*:|"<>]/g, '-')
+  filename = filename.replace(/^([A-Z-a-z])(-)\\/, '$1:\\') // windows drive letter fix
 
   mkdirp(dirname(resolve(filename)))
 
