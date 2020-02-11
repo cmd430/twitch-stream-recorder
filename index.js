@@ -127,12 +127,8 @@ twitchStream.streamLive()
   if (isLive) {
     log(`${config.streamer} is ${chalk.greenBright('live')}`)
 
-    let time = new Date()
-    let startTime = new Date(0)
-    startTime.setUTCSeconds((time.getTime() + time.getTimezoneOffset() * 60 * 1000) / 1000)
-
     app.stream.live = true
-    app.stream.start = startTime.toISOString()
+    app.stream.start = new Date().toISOString()
 
     recordStream()
   } else {
@@ -162,11 +158,8 @@ twitchPubSub.on('stream-up', data => {
   if (!app.stream.live) {
     log(`${config.streamer} is now ${chalk.greenBright('live')}`)
 
-    let startTime = new Date(0)
-    startTime.setUTCSeconds(data.time)
-
     app.stream.live = true
-    app.stream.start = startTime.toISOString()
+    app.stream.start = new Date().toISOString()
 
     recordStream()
   }
@@ -212,8 +205,16 @@ async function recordStream () {
   filename = filename.replace(/:year/gi, `${year}`)
   filename = filename.replace(/:shortYear/gi, `${shortYear}`)
   filename = filename.replace(/:period/gi, `${period}`)
-  filename = filename.replace(/[/?%*:|"<>]/g, '-')
-  filename = filename.replace(/^([A-Z-a-z])(-)\\/, '$1:\\') // windows drive letter fix
+  filename = filename.replace(/[?%*:|"<>]/g, '-')
+
+  if (process.platform === 'win32') {
+    filename = filename.replace(/\//g, '\\') // convert unix path seperators to windows style
+    filename = filename.replace(/[?%*:|"<>]/g, '-')
+    filename = filename.replace(/^([A-Z-a-z])(-)\\/, '$1:\\') // windows drive letter fix
+  } else {
+    filename = filename.replace(/\\/g, '/') // convert windows path seperators to unix style
+    filename = filename.replace(/[!?%*:;|"'<>`\0]/g, '-') // unix invaild filename chars
+  }
 
   mkdirp(dirname(resolve(filename)))
 
