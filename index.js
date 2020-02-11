@@ -20,7 +20,7 @@ const config_defaults = {
     stream_format: [
       'source'
     ],
-    output_template: join('.', 'recordings', ':streamer -- :date, :time')
+    output_template: join('.', 'recordings', ':shortYear.:month.:day :period -- :streamer -- :title')
   },
   time: {
     timezone: 'Europe/London',

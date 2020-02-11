@@ -4,7 +4,7 @@
     "stream_format": [
       "source"
     ],
-    "output_template": "recordings\\:year\\:month\\:shortYear.:month.:day :period -- :title"
+    "output_template": "recordings\\:shortYear.:month.:day :period -- :streamer -- :title"
   },
   "time": {
     "timezone": "Europe/London",

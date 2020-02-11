@@ -56,7 +56,7 @@
 # Features
 - Monitor streamer and automatically record to disk when live
   - streams are saved by default with the name following naming format:  
-   `./recordings/:year/:month/:shortYear.:month.:day :period -- :title.mp4`
+   `./recordings/:shortYear.:month.:day :period -- :streamer -- :title.mp4`
 - `config.json` to save settings
 - Command line args to override settings on a per run basis
 
