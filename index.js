@@ -266,10 +266,12 @@ async function recordStream () {
 
     process.on('SIGINT', abort)
     process.on('SIGHUP', abort)
+    process.on('uncaughtException', abort)
 
     ffmpeg.on('close', code => {
       process.removeListener('SIGINT', abort)
       process.removeListener('SIGHUP', abort)
+      process.on('uncaughtException', abort)
 
       return p_resolve(code)
     })
