@@ -235,11 +235,7 @@ if (cluster.isWorker) {
         '-hide_banner',
         '-loglevel', 'quiet',
         '-n',
-        /*
-          this flag is not reccomended for live stream inputs but can be used to get around bug https://trac.ffmpeg.org/ticket/7369,
-          uncomment if streams stop downloading before streamer offline
-          '-re',
-        */
+        '-re', // fix reading stream too fast, also fix reading too slow (timeout issues)
         '-i', `${streamUrl}`,
         '-c', 'copy',
         '-f', 'mp4',
