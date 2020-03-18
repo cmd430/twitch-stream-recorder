@@ -14,7 +14,7 @@
     "ffmpeg-static": "^4.0.1",
     "get-twitch-stream": "git+https://github.com/cmd430/get-twitch-stream.git",
     "lodash.merge": "^4.6.2",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.2",
     "mkdirp": "^1.0.3",
     "strip-ansi": "^6.0.0",
     "twitch-realtime": "git+https://github.com/cmd430/twitch-realtime.git"
