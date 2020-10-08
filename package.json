@@ -16,6 +16,7 @@
     "lodash.merge": "^4.6.2",
     "minimist": "^1.2.0",
     "mkdirp": "^1.0.3",
+    "node-fetch": "^2.6.1",
     "strip-ansi": "^6.0.0",
     "twitch-realtime": "git+https://github.com/cmd430/twitch-realtime.git"
   }

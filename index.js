@@ -11,6 +11,7 @@ const TwitchPubSub = require('twitch-realtime')
 const chalk = require('chalk')
 const stripAnsi = require('strip-ansi')
 const minimist = require('minimist')(process.argv.slice(2))
+const fetch = require('node-fetch')
 
 process.stdout.write('\u001b[2J\u001b[0;0H') // clear console
 
@@ -142,42 +143,57 @@ if (cluster.isWorker) {
   })
   .catch(err => debug)
 
-  const twitchPubSub = new TwitchPubSub({
-    defaultTopics: [
-      `video-playback.${config.streamer.toLowerCase()}`
-    ],
-    reconnect: true
-  })
+  async function setupPubSub () {
+    
+    // Hack to get a userID without needing OAuth LULW
+    const streamer_id = await fetch(`https://api.twitch.tv/api/channels/${config.streamer.toLowerCase()}/access_token`, {
+      headers: {
+      'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko'
+      }
+    })
+    .then(res => res.json())
+    .then(res => JSON.parse(res.token))
+    .then(res => res.channel_id)
+    
+    const twitchPubSub = new TwitchPubSub({
+      defaultTopics: [
+        `video-playback-by-id.${streamer_id}`
+      ],
+      reconnect: true
+    })
 
-  twitchPubSub.on('connect', () => {
-    debug(`Connected to Twitch PubSub`)
-  })
-  twitchPubSub.on('close', () => {
-    debug(`Disconnected from Twitch PubSub`)
-  })
-  twitchPubSub.on('raw', data => {
-    if (config.developer.verbose) debug(data)
-  })
-  twitchPubSub.on('stream-up', data => {
-    if (!config.developer.verbose) debug(data)
-    if (!app.stream.live) {
-      log(`${config.streamer} is now ${chalk.greenBright('live')}`)
+    twitchPubSub.on('connect', () => {
+      debug(`Connected to Twitch PubSub`)
+    })
+    twitchPubSub.on('close', () => {
+      debug(`Disconnected from Twitch PubSub`)
+    })
+    twitchPubSub.on('raw', data => {
+      if (config.developer.verbose) debug(data)
+    })
+    twitchPubSub.on('stream-up', data => {
+      if (!config.developer.verbose) debug(data)
+      if (!app.stream.live) {
+        log(`${config.streamer} is now ${chalk.greenBright('live')}`)
 
-      app.stream.live = true
-      app.stream.start = new Date().toISOString()
+        app.stream.live = true
+        app.stream.start = new Date().toISOString()
 
-      recordStream()
-    }
-  })
-  twitchPubSub.on('stream-down', data => {
-    if (!config.developer.verbose) debug(data)
-    if (app.stream.live) {
-      log(`${config.streamer} is ${chalk.redBright('offline')}`)
+        recordStream()
+      }
+    })
+    twitchPubSub.on('stream-down', data => {
+      if (!config.developer.verbose) debug(data)
+      if (app.stream.live) {
+        log(`${config.streamer} is ${chalk.redBright('offline')}`)
 
-      app.stream.live = false
-      app.stream.start = null
-    }
-  })
+        app.stream.live = false
+        app.stream.start = null
+      }
+    })
+  }
+  setupPubSub()
+  
 
   async function recordStream () {
     let filename = `${config.recorder.output_template}.mp4`
@@ -379,10 +395,12 @@ if (cluster.isWorker) {
   }
 } else if (cluster.isMaster) {
   let restart = null
+  let sig = false
 
   process.on('SIGINT', exit)
   process.on('SIGHUP', exit)
   function exit () { // allow manual quit
+    sig = true
     setTimeout(() => {
       clearTimeout(restart)
     }, 500)
@@ -392,8 +410,10 @@ if (cluster.isWorker) {
   cluster.on('exit', (worker, code, signal) => {
     if (code !== 0) { // if crash try restart
       process.stdout.write('\u001b[2J\u001b[0;0H')
-      log(`${chalk.redBright(`Application unexpectedly exit with code: ${chalk.grey(code)}`)}`)
-      log(`${chalk.magentaBright('Restarting...')}`)
+      if (!sig) {
+        log(`${chalk.redBright(`Application unexpectedly exit with code: ${chalk.grey(code)}`)}`)
+        log(`${chalk.magentaBright('Restarting...')}`)
+      }
       let attempts = 0
       function delayedRestart () {
         return setTimeout(() => {
