@@ -144,7 +144,6 @@ if (cluster.isWorker) {
   .catch(err => debug)
 
   async function setupPubSub () {
-    
     // Hack to get a userID without needing OAuth LULW
     const streamer_id = await fetch(`https://api.twitch.tv/api/channels/${config.streamer.toLowerCase()}/access_token`, {
       headers: {
@@ -154,7 +153,7 @@ if (cluster.isWorker) {
     .then(res => res.json())
     .then(res => JSON.parse(res.token))
     .then(res => res.channel_id)
-    
+
     const twitchPubSub = new TwitchPubSub({
       defaultTopics: [
         `video-playback-by-id.${streamer_id}`
@@ -193,7 +192,7 @@ if (cluster.isWorker) {
     })
   }
   setupPubSub()
-  
+
 
   async function recordStream () {
     let filename = `${config.recorder.output_template}.mp4`
