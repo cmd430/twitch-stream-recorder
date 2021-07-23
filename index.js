@@ -145,14 +145,25 @@ if (cluster.isWorker) {
 
   async function setupPubSub () {
     // Hack to get a userID without needing OAuth LULW
-    const streamer_id = await fetch(`https://api.twitch.tv/api/channels/${config.streamer.toLowerCase()}/access_token`, {
+    const postData = JSON.stringify({
+      query: `
+        query {
+          user(login: "${config.streamer.toLowerCase()}") {
+            id
+          }
+        }
+      `
+    })
+    const streamer_id = await fetch('https://gql.twitch.tv/gql', {
+      method: 'POST',
       headers: {
-      'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko'
-      }
+        'Client-ID': 'kimne78kx3ncx6brgo4mv6wki5h1ko',
+        'Content-Length': postData.length
+      },
+			body: postData
     })
     .then(res => res.json())
-    .then(res => JSON.parse(res.token))
-    .then(res => res.channel_id)
+    .then(res => res.data.user.id)
 
     const twitchPubSub = new TwitchPubSub({
       defaultTopics: [
