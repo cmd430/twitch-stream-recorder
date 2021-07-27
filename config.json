@@ -1,9 +1,11 @@
 {
   "streamer": "TwitchUser",
   "recorder": {
+    "auth": null,
     "stream_format": [
       "source"
     ],
+    "max_attempts": 10,
     "output_template": "recordings\\:shortYear.:month.:day :period -- :streamer -- :title"
   },
   "time": {
