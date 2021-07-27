@@ -1,6 +1,6 @@
 {
   "name": "twitch-stream-recorder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Record Twitch streams automatically",
   "main": "index.js",
   "scripts": {
