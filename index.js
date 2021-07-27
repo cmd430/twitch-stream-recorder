@@ -18,9 +18,11 @@ process.stdout.write('\u001b[2J\u001b[0;0H') // clear console
 const config_defaults = {
   streamer: 'TwitchUser',
   recorder: {
+    auth: null,
     stream_format: [
       'source'
     ],
+    max_attempts: 10,
     output_template: join('.', 'recordings', ':shortYear.:month.:day :period -- :streamer -- :title')
   },
   time: {
@@ -42,7 +44,9 @@ try {
 const config_args = {
   streamer: minimist.streamer,
   recorder: {
+    auth: minimist.auth ? minimist.auth : null,
     stream_format: minimist.format ? minimist.format.split('/') : undefined,
+    max_attempts: minimist.max_attempts ? parseInt(minimist.max_attempts) : undefined,
     output_template: minimist.output_template
   },
   time: {
@@ -125,6 +129,7 @@ if (cluster.isWorker) {
     exiting: false
   }
   const twitchStream = new TwitchStream({
+    auth: config.recorder.auth,
     channel: `${config.streamer}`
   })
 
@@ -252,7 +257,23 @@ if (cluster.isWorker) {
     filename = await reserveFile({ basefile: filename })
 
     new Promise(async (p_resolve, p_reject) => {
-      let streamUrl = await twitchStream.getStreamURL(config.recorder.format)
+      let attempt = 0
+      let getStreamURL = async () => {
+        debug(`get stream url attempt ${++attempt}/${config.recorder.max_attempts}`)
+        return await twitchStream.getStreamURL(config.recorder.stream_format)
+        .then(url => {
+          debug(`stream url took: ${attempt} attempts`)
+          return url
+        })
+        .catch(async err => {
+          debug(`stream url error: ${err.message}`)
+          if (attempt >= config.recorder.max_attempts) return p_reject(err)
+          await new Promise(r => setTimeout(r, 1000)) // wait 1s before try again
+          return await getStreamURL()
+        })
+      }
+
+      let streamUrl = await getStreamURL()
 
       debug(`stream url: ${streamUrl}`)
       debug(`downloading stream to: ${resolve(filename)}`)
@@ -341,7 +362,7 @@ if (cluster.isWorker) {
       log(`${chalk.redBright(`• `)}${chalk.reset(`Unable to start recording '${config.streamer}' live stream`)}`)
       debug(`failed to start subprocess: ${err.message}`)
 
-      process.exit(0) // abort because something has gone wrong with spawn
+      process.exit(0) // abort because something has gone wrong with spawn, or we cant get stream url (bad quality?)
     })
   }
 
@@ -456,6 +477,13 @@ function showHelp () {
         Options:
           --streamer=${chalk.grey(`<streamer username>`)}    Set the Twitch streamer to monitor
                                             Default: ${chalk.grey(`sweet_anita`)}
+
+          --auth=${chalk.grey(`<twitch auth token>`)}        Set auth token to use when getting the stream (This must be a user auth token)
+                                            This may be used to avoid Twitch Ads for subscribed channels
+                                            Default: ${chalk.grey(`null`)}
+
+          --max_attempts=${chalk.grey(`<max attempts>`)}     Set the max number of attempts to get the stream URL
+                                            Default: ${chalk.grey(`10`)}
 
           --output_template=${chalk.grey(`"<template>"`)}    Set template and path for recorded streams, if path does not exit it will be created
                                             Accepts tokens; :streamer, :title, :date, :time, :day, :month, :year, :shortYear, :period
