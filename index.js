@@ -24,7 +24,7 @@ const config_defaults = {
     ],
     low_latency: false,
     max_attempts: 10,
-    output_template: join('.', 'recordings', ':shortYear.:month.:day :period -- :streamer -- :title')
+    output_template: join('.', 'recordings', ':shortYear.:month.:day :period -- :streamer')
   },
   time: {
     timezone: 'Europe/London',
