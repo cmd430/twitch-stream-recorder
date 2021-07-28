@@ -22,6 +22,7 @@ const config_defaults = {
     stream_format: [
       'source'
     ],
+    low_latency: false,
     max_attempts: 10,
     output_template: join('.', 'recordings', ':shortYear.:month.:day :period -- :streamer -- :title')
   },
@@ -44,9 +45,10 @@ try {
 const config_args = {
   streamer: minimist.streamer,
   recorder: {
-    auth: minimist.auth ? minimist.auth : null,
+    auth: minimist.auth,
     stream_format: minimist.format ? minimist.format.split('/') : undefined,
-    max_attempts: minimist.max_attempts ? parseInt(minimist.max_attempts) : undefined,
+    low_latency: minimist.low_latency,
+    max_attempts: minimist.max_attempts,
     output_template: minimist.output_template
   },
   time: {
@@ -130,6 +132,7 @@ if (cluster.isWorker) {
   }
   const twitchStream = new TwitchStream({
     auth: config.recorder.auth,
+    lowLatency: config.recorder.low_latency,
     channel: `${config.streamer}`
   })
 
@@ -477,6 +480,8 @@ function showHelp () {
         Options:
           --streamer=${chalk.grey(`<streamer username>`)}    Set the Twitch streamer to monitor
                                             Default: ${chalk.grey(`sweet_anita`)}
+
+          --low_latency                                      Set the Twitch stream to low latency mode
 
           --auth=${chalk.grey(`<twitch auth token>`)}        Set auth token to use when getting the stream (This must be a user auth token)
                                             This may be used to avoid Twitch Ads for subscribed channels
