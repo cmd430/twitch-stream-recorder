@@ -6,7 +6,7 @@
       "source"
     ],
     "max_attempts": 10,
-    "output_template": "recordings\\:shortYear.:month.:day :period -- :streamer -- :title"
+    "output_template": "recordings\\:shortYear.:month.:day :period -- :streamer"
   },
   "time": {
     "timezone": "Europe/London",
