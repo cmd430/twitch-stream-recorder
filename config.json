@@ -1,15 +1,15 @@
 {
-  "streamer": "TwitchUser",
+  "channel": "TwitchUser",
   "recorder": {
     "auth": null,
-    "stream_format": [
-      "source"
-    ],
-    "max_attempts": 10,
-    "output_template": "recordings\\:shortYear.:month.:day :period -- :streamer"
+    "quality": "best",
+    "template": "recordings\\:shortYear.:month.:day :period -- :channel"
   },
   "time": {
     "timezone": "Europe/London",
-    "timezone_format": "en-GB"
+    "timezoneFormat": "en-GB"
+  },
+  "developer": {
+    "debug": false
   }
 }

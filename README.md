@@ -17,7 +17,7 @@
 ---
 
 # Prerequisites
-- [Node `version >= 13`](https://nodejs.org/en/download/current/)
+- [Node `version >= 14`](https://nodejs.org/en/download/current/)
 - [Git](https://git-scm.com/downloads)
 - A small amount of command line knowledge
 
@@ -39,7 +39,7 @@
   $ npm i --only=prod
   ```
 - Edit `config.json` with your desired preferences  
-  > For most use cases only the `Streamer` and `timezone` needs to be changed
+  > For most use cases only the `channel` and `timezone` needs to be changed
 
 #### Run the Program
 > *Any of the following methods may be used*
@@ -56,7 +56,7 @@
 # Features
 - Monitor streamer and automatically record to disk when live
   - streams are saved by default with the name following naming format:  
-   `./recordings/:shortYear.:month.:day :period -- :streamer -- :title.mp4`
+   `./recordings/:shortYear.:month.:day :period -- :channel.mp4`
 - `config.json` to save settings
 - Command line args to override settings on a per run basis
 
