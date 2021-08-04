@@ -3,13 +3,11 @@
   "recorder": {
     "auth": null,
     "quality": "best",
-    "template": "recordings\\:shortYear.:month.:day :period -- :channel"
+    "template": ":shortYear.:month.:day :period -- :channel",
+    "outputDir": "recordings"
   },
   "time": {
     "timezone": "Europe/London",
-    "timezoneFormat": "en-GB"
-  },
-  "developer": {
-    "debug": false
+    "format": "en-GB"
   }
 }
